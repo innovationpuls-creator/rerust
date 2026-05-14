@@ -4,7 +4,9 @@
 
 **CineForge（创剧）** — Tauri 2 桌面应用，实现从剧本到电影的流线化产出。
 
-- **前端**：Tauri WebView（`extracted/` 目录下为打包前的 web 资产）
+> 完整文档见 [README.md](./README.md)
+
+- **前端**：Tauri WebView（`dist/` 目录下为前端构建产物）
 - **后端**：Rust（`src-tauri/`），SQLite 本地数据库，LLM 对话集成
 - **构建**：`cargo build`（Rust 侧）；`npm run tauri dev`（开发模式）
 
