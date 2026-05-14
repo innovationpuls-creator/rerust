@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>创剧 CineForge</title>
+    <script>
+// Tauri v2 compatibility shim for Electron tudouApp bridge
+(function(){'use strict';var I=window.__TAURI_INTERNALS__;if(!I){console.warn('Tauri IPC not available');window.tudouApp={screenplay:{},seedance:{},on:function(){}};return}
+function invoke(c,a){return I.invoke(c,a||{})}
+function listen(e,h){var id=I.transformCallback(function(d){h(d&&d.payload!==void 0?d.payload:d)})
+return invoke('plugin:event|listen',{event:e,target:{kind:'Any'},handler:id}).then(function(eid){return function(){invoke('plugin:event|unlisten',{event:e,eventId:eid}).catch(function(){})}})}
+function onEvent(e,h){return listen(e,function(d){h(d&&d.payload!==void 0?d.payload:d)})}
+// Auth fetch proxy: intercept calls to 150.158.54.16/api/auth and route through IPC
+var _fetch=window.fetch;window.fetch=function(u,i){var url=typeof u==='string'?u:u.url;if(url&&url.indexOf('150.158.54.16/api/auth')>=0){var opts=i||{};var body=JSON.parse(opts.body||'{}');var p;if(url.indexOf('/login')>=0)p=invoke('auth_login',{username:body.username,password:body.password});else if(url.indexOf('/register')>=0)p=invoke('auth_register',{username:body.username,password:body.password,email:body.email||''});else if(url.indexOf('/refresh')>=0)p=invoke('auth_refresh',{refreshToken:body.refreshToken});else p=Promise.reject('Unknown auth endpoint')
+return p.then(function(d){return new Response(JSON.stringify(d),{status:200,headers:{'Content-Type':'application/json'}})}).catch(function(e){return new Response(JSON.stringify({error:'网络错误: '+e}),{status:502,headers:{'Content-Type':'application/json'}})})}
+return _fetch.call(this,u,i)}
+window.tudouApp={
+getAppSettings:function(){return invoke('get_app_settings')},
+saveAppSettings:function(p){return invoke('save_app_settings',{payload:p})},
+getDatabaseMeta:function(){return invoke('get_database_meta')},
+testConnection:function(p){return invoke('test_connection',{payload:p})},
+getRecentScriptTasks:function(){return invoke('get_recent_script_tasks')},
+getRecentImagePromptTasks:function(){return invoke('get_recent_image_tasks')},
+getRecentVideoPromptTasks:function(){return invoke('get_recent_video_tasks')},
+loadScriptTask:function(i){return invoke('load_script_task',{taskId:i})},
+deleteScriptTask:function(i){return invoke('delete_script_task',{taskId:i})},
+deleteImageTask:function(i){return invoke('delete_image_task',{taskId:i})},
+deleteVideoTask:function(i){return invoke('delete_video_task',{taskId:i})},
+saveScriptDraft:function(d){return invoke('save_script_draft',{payload:d})},
+saveImagePromptDraft:function(d){return invoke('save_image_prompt_draft',{payload:d})},
+saveVideoPromptDraft:function(d){return invoke('save_video_prompt_draft',{payload:d})},
+runScriptGeneration:function(p){return invoke('save_script_generation',{payload:p})},
+runImagePromptGeneration:function(p){return invoke('run_image_generation',{payload:p})},
+runVideoPromptGeneration:function(p){return invoke('run_video_generation',{payload:p})},
+runScriptReview:function(p){return invoke('run_script_review',{payload:p})},
+runImagePromptReview:function(p){return invoke('run_image_review',{payload:p})},
+runVideoPromptReview:function(p){return invoke('run_video_review',{payload:p})},
+extractAssets:function(p){return invoke('run_asset_extraction',{payload:p})},
+screenplay:{
+skillStatus:function(){return invoke('screenplay_skill_status')},
+createProject:function(i){return invoke('screenplay_create_project',{init:i})},
+getProject:function(i){return invoke('screenplay_get_project',{projectId:i})},
+deleteProject:function(i){return invoke('screenplay_delete_project',{projectId:i})},
+renameProject:function(p){return invoke('screenplay_rename_project',{payload:{projectId:p.projectId,newName:p.newName}})},
+updateStepStructured:function(p){return invoke('screenplay_update_step_structured',{payload:{projectId:p.projectId,stepNumber:p.stepNumber,structured:p.structured}})},
+finalizeToScriptTask:function(p){return invoke('screenplay_finalize_to_script_task',{payload:{projectId:p.projectId}})},
+generateStep:function(p){return invoke('screenplay_generate_step',{payload:{projectId:p.projectId,stepNumber:p.stepNumber,userFeedback:p.userFeedback}})},
+selfcheckStep:function(p){return invoke('screenplay_selfcheck_step',{payload:{projectId:p.projectId,stepNumber:p.stepNumber}})},
+getCachedSelfcheck:function(p){return invoke('screenplay_get_cached_selfcheck',{payload:{projectId:p.projectId,stepNumber:p.stepNumber}})},
+approveStep:function(p){return invoke('screenplay_approve_step',{payload:{projectId:p.projectId,stepNumber:p.stepNumber,nextStep:p.nextStep}})},
+listVersions:function(p){return invoke('screenplay_list_versions',{payload:{projectId:p.projectId,stepNumber:p.stepNumber}})},
+setStepSelection:function(p){return invoke('screenplay_set_step_selection',{payload:{projectId:p.projectId,stepNumber:p.stepNumber,selectionId:p.selectionId!==void 0?String(p.selectionId):'latest'}})}},
+seedance:{
+runPhaseAD:function(p){return invoke('seedance_run_phase_ad',{payload:p})},
+getAnalysis:function(p){return invoke('seedance_get_analysis',{payload:p})},
+listUnits:function(p){return invoke('seedance_list_units',{payload:p})},
+runUnit:function(p){return invoke('seedance_run_unit',{payload:p})},
+runAll:function(p){return invoke('seedance_run_all',{payload:p})},
+onProgress:function(fn){return onEvent('seedance:progress',fn)},
+onAnalysisChunk:function(fn){return onEvent('seedance:analysis-chunk',fn)},
+onUnitChunk:function(fn){return onEvent('seedance:unit-chunk',fn)}},
+on:function(e,cb){return onEvent(e,cb)}}})();
+</script>
+    <script type="module" crossorigin src="./assets/index-Cg69QKQS.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BgRjVoSc.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
